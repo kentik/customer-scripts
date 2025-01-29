@@ -175,11 +175,11 @@ else {
 Write-Output ""
 
 # Ensure network watcher feature is registered
-# Network Watcher feature is registered by default
+# Network Watcher feature is registered by default and will be in 'Registering' state shortly after sub creation.
 Write-Output "Ensuring network watcher feature is registered."
 $nwRet = Get-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
 
-if ($nwRet.RegistrationState -ne 'Registered') {
+if ($nwRet.RegistrationState -eq 'NotRegistered') {
     Register-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
     Write-Output "Network Watcher feature is being registered. Please be patient, this may take several minutes."
 
@@ -188,7 +188,7 @@ if ($nwRet.RegistrationState -ne 'Registered') {
         Start-Sleep -Milliseconds 5000
         $nwRet = Get-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
         Write-Output "Checking registration status..."
-    } while ($nwRet.RegistrationState -ne 'Registered')
+    } while ($nwRet.RegistrationState -eq 'NotRegistered')
 
     Write-Output "Success: Network Watcher feature is now registered."
 }
