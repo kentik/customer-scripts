@@ -221,7 +221,7 @@ Get-AzVirtualNetwork -ResourceGroupName $resourceGroup | ForEach-Object {
         $existingFlowLog = $existingFlowLogs | Where-Object { $_.TargetResourceId -eq $VNet.Id }
 
         if ($existingFlowLog -and $existingFlowLog.Enabled) {
-            Write-Output "Success: VNet flow logs already exist for Virtual Network '$($VNet.Name)' with Name: $($existingFlowLog.Name)"
+            Write-Output "Success: VNet flow logs already exist for Virtual Network '$($VNet.Name)' with Name: '$($existingFlowLog.Name)'"
         }
         else {
             # Enable VNet flow logs
@@ -229,7 +229,7 @@ Get-AzVirtualNetwork -ResourceGroupName $resourceGroup | ForEach-Object {
             Write-Output "Enabling VNet flow logs for Virtual Network '$($VNet.Name)'"
             $ret = New-AzNetworkWatcherFlowLog -Enabled $true -Name "flowLog_$($VNet.Name)" -NetworkWatcherName "NetworkWatcher_$location" -ResourceGroupName NetworkWatcherRG -StorageId $storageAccountID -TargetResourceId $VNet.Id -FormatVersion 2 -EnableRetention $true -RetentionPolicyDays 7
             if ( $ret.TargetResourceId.toLower().length -ne 0 -AND $ret.Enabled ) {
-                Write-Output "Success: VNet flow logs are enabled with Name: $($ret.Name)"
+                Write-Output "Success: VNet flow logs are enabled with Name: '$($ret.Name)'"
             }
             else {
                 Write-Error "Fail: Could not enable VNet flow logs"
