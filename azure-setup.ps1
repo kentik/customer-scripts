@@ -174,29 +174,6 @@ else {
 }
 Write-Output ""
 
-# Ensure network watcher feature is registered
-# Network Watcher feature is registered by default and will be in 'Registering' state shortly after sub creation.
-Write-Output "Ensuring network watcher feature is registered."
-$nwRet = Get-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
-
-if ($nwRet.RegistrationState -eq 'NotRegistered') {
-    Register-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
-    Write-Output "Network Watcher feature is being registered. Please be patient, this may take several minutes."
-
-    # Wait for the feature to be registered
-    do {
-        Start-Sleep -Milliseconds 5000
-        $nwRet = Get-AzProviderFeature -FeatureName AllowNetworkWatcher -ProviderNamespace Microsoft.Network
-        Write-Output "Checking registration status..."
-    } while ($nwRet.RegistrationState -eq 'NotRegistered')
-
-    Write-Output "Success: Network Watcher feature is now registered."
-}
-else {
-    Write-Output "Success: Network Watcher feature is already registered."
-}
-Write-Output ""
-
 # Ensure the network watcher feature is enabled for the resource group and location
 # By default, Network Watcher is automatically enabled.
 # When you create or update a virtual network in your subscription, Network Watcher will be automatically enabled in your Virtual Network's region.
